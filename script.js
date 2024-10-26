@@ -24,16 +24,16 @@ function crearPersonaje(nombre) {
       let danoOponente = Math.floor(Math.random() * oponente.ataque) + 1;
   
       oponente.vida -= danoJugador;
-      console.log(`Atacas a ${oponente.nombre} y le haces ${danoJugador} de daño. Vida restante del oponente: ${oponente.vida}`);
+      console.log("Atacas a ${oponente.nombre} y le haces ${danoJugador} de daño. Vida restante del oponente: ${oponente.vida}");
   
       if (oponente.vida > 0) {
         jugador.vida -= Math.max(danoOponente - jugador.escudo, 0);
-        console.log(`${oponente.nombre} te ataca y te hace ${danoOponente} de daño. Tu vida restante: ${jugador.vida}`);
+        console.log("${oponente.nombre} te ataca y te hace ${danoOponente} de daño. Tu vida restante: ${jugador.vida}");
         jugador.escudo = 0;  // Escudo se reinicia después de un turno
       }
     } else if (accion.toLowerCase() === "defender") {
       jugador.escudo = Math.floor(Math.random() * 50) + 1;
-      console.log(`Te defiendes y generas un escudo de ${jugador.escudo} puntos.`);
+      console.log("Te defiendes y generas un escudo de ${jugador.escudo} puntos.");
     } else {
       alert("Acción no válida. Intenta de nuevo.");
     }
