@@ -1,13 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batalla Pokémon</title>
+  <link rel="stylesheet" href="main.css">
 </head>
 <body>
-
-
-   <script src="script.js"> </script> 
+  <div class="escenario">
+    <div class="pokemon-container">
+      <div id="pokemon-jugador" class="personajes">
+        <img src="./img/Luka.png" alt="Tu Pokémon" id="img-jugador">
+        <p class="hpvida" id="vida-jugador">Vida: 100</p>
+      </div>
+      <div id="pokemon-oponente" class="personajes">
+        <img src="./img/Giovanni.png" alt="Oponente Pokémon" id="img-oponente">
+        <p class="hpvida" id="vida-oponente">Vida: 100</p>
+      </div>
+    </div>
+    <div id="buscador-container">
+      <input id="buscador" type="text" placeholder="Busca un Pokémon">
+      <div id="pokemon-seleccion"></div>
+    </div>
+    <div id="ataques-container">
+      <button id="ataque-1">Movimiento 1</button>
+      <button id="ataque-2">Movimiento 2</button>
+      <button id="ataque-3">Movimiento 3</button>
+      <button id="ataque-4">Protección</button>
+    </div>
+    <p id="resultado"></p>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
