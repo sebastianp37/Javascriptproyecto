@@ -1,48 +1,90 @@
-// Datos de Pokémon
-const pokemones = [
-  { nombre: "Mewtwo", vida: 100, movimientos: ["Psíquico", "Onda Mental", "Rayo", "Protección"], img: "img/mewtwo.png" },
-  { nombre: "Darkrai", vida: 100, movimientos: ["Pesadilla", "Bola Sombra", "Rayo Umbrio", "Protección"], img: "img/darkrai.png" },
-  { nombre: "Greninja", vida: 100, movimientos: ["Shuriken de Agua", "Corte Umbrio", "Cascada", "Protección"], img: "img/greninja.png" },
-  { nombre: "Gallade", vida: 100, movimientos: ["Hoja Aguda", "Espada Santa", "Cabeza de Hierro", "Protección"], img: "img/gallade.png" },
-  { nombre: "Blaziken", vida: 100, movimientos: ["Patada Ígnea", "Combate Cercano", "Golpe Aéreo", "Protección"], img: "img/blaziken.png" },
-];
-
+// Reemplazar el array de pokemones por una variable vacía
+let pokemones = [];
 let jugador = null;
 let oponente = null;
 let proteccionUsada = false;
+let estadisticas = {
+    victorias: 0,
+    derrotas: 0,
+    ultimoPokemon: null,
+    batallasJugadas: 0
+};
 
-// Mostrar opciones de selección
-function mostrarPokemones() {
+// Agregar función para cargar los datos del JSON
+async function cargarPokemones() {
+  try {
+    const response = await fetch('./data/pokemones.json');
+    const data = await response.json();
+    pokemones = data.pokemones;
+    mostrarPokemones();
+  } catch (error) {
+    console.error('Error al cargar los pokemones:', error);
+    document.getElementById('pokemon-seleccion').innerHTML = 
+      '<p style="color: red;">Error al cargar los pokémones. Por favor, recarga la página.</p>';
+  }
+}
+
+// Modificar la función mostrarPokemones para incluir más información
+function mostrarPokemones(pokemonesAMostrar = pokemones) {
   const contenedor = document.getElementById("pokemon-seleccion");
   contenedor.innerHTML = "";
-  pokemones.forEach((pokemon, index) => {
+  pokemonesAMostrar.forEach((pokemon) => {
     const div = document.createElement("div");
     div.className = "pokemon-seleccion-item";
-    div.textContent = pokemon.nombre;
-    div.onclick = () => seleccionarPokemon(index);
+    div.innerHTML = `
+      <img src="${pokemon.img}" alt="${pokemon.nombre}" class="pokemon-miniatura">
+      <div class="pokemon-info">
+        <div class="pokemon-nombre">${pokemon.nombre}</div>
+        <div class="pokemon-tipo">${pokemon.tipo}</div>
+        <div class="pokemon-stats">HP: ${pokemon.vida}</div>
+      </div>
+    `;
+    div.onclick = () => seleccionarPokemon(pokemon.id - 1);
     contenedor.appendChild(div);
   });
 }
+
+// Modificar el buscador para incluir búsqueda por tipo
+document.getElementById("buscador").addEventListener("input", (e) => {
+  const busqueda = e.target.value.toLowerCase();
+  const filtrados = pokemones.filter(pokemon => 
+    pokemon.nombre.toLowerCase().includes(busqueda) ||
+    pokemon.tipo.toLowerCase().includes(busqueda)
+  );
+  mostrarPokemones(filtrados);
+});
+
+// Modificar la inicialización para cargar los datos
+document.addEventListener('DOMContentLoaded', () => {
+  cargarPokemones();
+  cargarEstadisticas();
+});
 
 // Seleccionar Pokémon
 function seleccionarPokemon(index) {
   if (!jugador) {
     jugador = { ...pokemones[index] };
     document.getElementById("img-jugador").src = jugador.img;
+    document.getElementById("vida-jugador").style.display = "block"; // Mostrar vida del jugador
+    estadisticas.ultimoPokemon = jugador.nombre; // Guardar último Pokémon
+    guardarEstadisticas();
     alert(`Seleccionaste a ${jugador.nombre}. Ahora selecciona al oponente.`);
   } else if (!oponente) {
     oponente = { ...pokemones[index] };
     document.getElementById("img-oponente").src = oponente.img;
+    document.getElementById("vida-oponente").style.display = "block"; // Mostrar vida del oponente
     alert(`Tu oponente será ${oponente.nombre}. ¡Que comience la batalla!`);
     inicializarBatalla();
   }
 }
-
 // Inicializar batalla
 function inicializarBatalla() {
   // Ocultar los botones de selección
   document.getElementById("pokemon-seleccion").style.display = "none";
-
+  
+  // Hacer las imágenes más grandes
+  document.getElementById("img-jugador").classList.add("en-batalla");
+  document.getElementById("img-oponente").classList.add("en-batalla");
   // Mostrar los botones de ataque
   document.getElementById("ataques-container").style.display = "flex"; 
 
@@ -65,7 +107,6 @@ function inicializarBatalla() {
     }
   };
 }
-
 
 // Lógica del combate, los movimientos de momento tendrán un daño aleatorio
 function ejecutarMovimiento(index) {
@@ -116,6 +157,9 @@ function mostrarResultado(mensaje) {
   document.getElementById("vida-jugador").style.display = "none";
   document.getElementById("vida-oponente").style.display = "none";
 
+  // Ocultar los botones de ataque
+  document.getElementById("ataques-container").style.display = "none"; // Agregar esta línea
+
   // Mostrar el mensaje de victoria o derrota en el centro de la pantalla
   document.getElementById("resultado").textContent = mensaje;
 
@@ -126,8 +170,17 @@ function mostrarResultado(mensaje) {
 
   // Asegúrate de que el botón se coloque después del mensaje
   document.getElementById("resultado").appendChild(lucharOtraVezBtn);
-}
 
+  // Actualizar estadísticas
+  estadisticas.batallasJugadas++;
+  if (mensaje.includes("Felicitaciones")) {
+    estadisticas.victorias++;
+  } else {
+    estadisticas.derrotas++;
+  }
+  guardarEstadisticas();
+  mostrarEstadisticas();
+}
 // Reiniciar la batalla
 function reiniciarBatalla() {
   // Restaurar los Pokémon a sus estados iniciales
@@ -163,12 +216,40 @@ function reiniciarBatalla() {
   mostrarPokemones();
 }
 
-// Buscador de Pokémon (aún en proceso)
-document.getElementById("buscador").addEventListener("input", (e) => {
-  const query = e.target.value.toLowerCase();
-  const filtrados = pokemones.filter((pokemon) => pokemon.nombre.toLowerCase().includes(query));
-  mostrarPokemones(filtrados);
-});
+// Función para cargar estadísticas del localStorage
+function cargarEstadisticas() {
+    const statsGuardadas = localStorage.getItem('pokemonEstadisticas');
+    if (statsGuardadas) {
+        estadisticas = JSON.parse(statsGuardadas);
+        mostrarEstadisticas();
+    }
+}
 
-// Inicializar
-mostrarPokemones();
+// Función para guardar estadísticas
+function guardarEstadisticas() {
+    localStorage.setItem('pokemonEstadisticas', JSON.stringify(estadisticas));
+}
+
+// Función para mostrar estadísticas
+function mostrarEstadisticas() {
+    const contenedor = document.getElementById("buscador-container");
+    const statsDiv = document.createElement("div");
+    statsDiv.className = "estadisticas";
+    statsDiv.innerHTML = `
+        <h3>Estadísticas de Batalla</h3>
+        <p>Victorias: ${estadisticas.victorias}</p>
+        <p>Derrotas: ${estadisticas.derrotas}</p>
+        <p>Batallas jugadas: ${estadisticas.batallasJugadas}</p>
+        ${estadisticas.ultimoPokemon ? `<p>Último Pokémon: ${estadisticas.ultimoPokemon}</p>` : ''}
+    `;
+    
+    // Remover estadísticas anteriores si existen
+    const statsAnterior = document.querySelector(".estadisticas");
+    if (statsAnterior) {
+        statsAnterior.remove();
+    }
+    
+    contenedor.insertBefore(statsDiv, contenedor.firstChild);
+}
+
+

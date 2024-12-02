@@ -1,0 +1,44 @@
+{
+  "pokemones": [
+    {
+      "id": 1,
+      "nombre": "Mewtwo",
+      "vida": 100,
+      "movimientos": ["Psíquico", "Onda Mental", "Rayo", "Protección"],
+      "img": "img/mewtwo.png",
+      "tipo": "Psíquico"
+    },
+    {
+      "id": 2,
+      "nombre": "Darkrai",
+      "vida": 100,
+      "movimientos": ["Pesadilla", "Bola Sombra", "Rayo Umbrio", "Protección"],
+      "img": "img/darkrai.png",
+      "tipo": "Siniestro"
+    },
+    {
+      "id": 3,
+      "nombre": "Greninja",
+      "vida": 100,
+      "movimientos": ["Shuriken de Agua", "Corte Umbrio", "Cascada", "Protección"],
+      "img": "img/greninja.png",
+      "tipo": "Agua/Siniestro"
+    },
+    {
+      "id": 4,
+      "nombre": "Gallade",
+      "vida": 100,
+      "movimientos": ["Hoja Aguda", "Espada Santa", "Cabeza de Hierro", "Protección"],
+      "img": "img/gallade.png",
+      "tipo": "Psíquico/Lucha"
+    },
+    {
+      "id": 5,
+      "nombre": "Blaziken",
+      "vida": 100,
+      "movimientos": ["Patada Ígnea", "Combate Cercano", "Golpe Aéreo", "Protección"],
+      "img": "img/blaziken.png",
+      "tipo": "Fuego/Lucha"
+    }
+  ]
+} 
