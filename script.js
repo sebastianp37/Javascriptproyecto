@@ -1,4 +1,3 @@
-// Reemplazar el array de pokemones por una variable vacía
 let pokemones = [];
 let jugador = null;
 let oponente = null;
@@ -10,7 +9,7 @@ let estadisticas = {
     batallasJugadas: 0
 };
 
-// Agregar función para cargar los datos del JSON
+// Agregar función para cargar los datos del JSON - Error sino está en Live
 async function cargarPokemones() {
   try {
     const response = await fetch('./data/pokemones.json');
@@ -24,7 +23,7 @@ async function cargarPokemones() {
   }
 }
 
-// Modificar la función mostrarPokemones para incluir más información
+// Boton de selección de Pokemon
 function mostrarPokemones(pokemonesAMostrar = pokemones) {
   const contenedor = document.getElementById("pokemon-seleccion");
   contenedor.innerHTML = "";
@@ -82,7 +81,7 @@ function inicializarBatalla() {
   // Ocultar los botones de selección
   document.getElementById("pokemon-seleccion").style.display = "none";
   
-  // Hacer las imágenes más grandes
+  // Tamaño imagenes personajes
   document.getElementById("img-jugador").classList.add("en-batalla");
   document.getElementById("img-oponente").classList.add("en-batalla");
   // Mostrar los botones de ataque
@@ -138,7 +137,7 @@ function ejecutarMovimiento(index) {
 
   alert(`${oponente.nombre} contraataca y causa ${danoOponente} de daño. Vida de ${jugador.nombre}: ${jugador.vida}`);
 
-  // Barra o indicador de vida jugador
+  // Indicador de vida jugador
   document.getElementById("vida-jugador").textContent = `Vida: ${jugador.vida}`;
 
   // Comprobar si el jugador ha sido derrotado
@@ -163,12 +162,12 @@ function mostrarResultado(mensaje) {
   // Mostrar el mensaje de victoria o derrota en el centro de la pantalla
   document.getElementById("resultado").textContent = mensaje;
 
-  // Crear y agregar el botón de "Luchar otra vez"
+  // Botón de "Luchar otra vez"
   const lucharOtraVezBtn = document.createElement("button");
   lucharOtraVezBtn.textContent = "Luchar otra vez";
   lucharOtraVezBtn.onclick = reiniciarBatalla;
 
-  // Asegúrate de que el botón se coloque después del mensaje
+  // Boton luego de la batalla
   document.getElementById("resultado").appendChild(lucharOtraVezBtn);
 
   // Actualizar estadísticas
@@ -216,7 +215,7 @@ function reiniciarBatalla() {
   mostrarPokemones();
 }
 
-// Función para cargar estadísticas del localStorage
+// Cargar estadísticas del localStorage
 function cargarEstadisticas() {
     const statsGuardadas = localStorage.getItem('pokemonEstadisticas');
     if (statsGuardadas) {
@@ -230,7 +229,7 @@ function guardarEstadisticas() {
     localStorage.setItem('pokemonEstadisticas', JSON.stringify(estadisticas));
 }
 
-// Función para mostrar estadísticas
+// Mostrar record e historial 
 function mostrarEstadisticas() {
     const contenedor = document.getElementById("buscador-container");
     const statsDiv = document.createElement("div");
