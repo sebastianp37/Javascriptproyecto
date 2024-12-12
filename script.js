@@ -67,12 +67,12 @@ function seleccionarPokemon(index) {
     document.getElementById("vida-jugador").style.display = "block"; // Mostrar vida del jugador
     estadisticas.ultimoPokemon = jugador.nombre; // Guardar último Pokémon
     guardarEstadisticas();
-    alert(`Seleccionaste a ${jugador.nombre}. Ahora selecciona al oponente.`);
+    swal.fire(`Seleccionaste a ${jugador.nombre}. Ahora selecciona al oponente.`);
   } else if (!oponente) {
     oponente = { ...pokemones[index] };
     document.getElementById("img-oponente").src = oponente.img;
     document.getElementById("vida-oponente").style.display = "block"; // Mostrar vida del oponente
-    alert(`Tu oponente será ${oponente.nombre}. ¡Que comience la batalla!`);
+    swal.fire(`Tu oponente será ${oponente.nombre}. ¡Que comience la batalla!`);
     inicializarBatalla();
   }
 }
@@ -97,7 +97,7 @@ function inicializarBatalla() {
   document.getElementById("ataques-container").onclick = (e) => {
     const id = e.target.id;
     if (id === "ataque-4" && proteccionUsada) {
-      alert("¡No puedes usar Protección dos veces seguidas!");
+      swal.fire("¡No puedes usar Protección dos veces seguidas!");
       return;
     }
     if (id.startsWith("ataque")) {
@@ -110,7 +110,7 @@ function inicializarBatalla() {
 // Lógica del combate, los movimientos de momento tendrán un daño aleatorio
 function ejecutarMovimiento(index) {
   if (index === 3) {
-    alert(`${jugador.nombre} usó Protección. El ataque del oponente se anuló.`);
+    swal.fire(`${jugador.nombre} usó Protección. El ataque del oponente se anuló.`);
     proteccionUsada = true;
     return;
   }
@@ -120,7 +120,12 @@ function ejecutarMovimiento(index) {
   const danoJugador = Math.floor(Math.random() * 30) + 1 * (critico ? 2 : 1);
   oponente.vida -= danoJugador;
 
-  alert(`${jugador.nombre} usó ${jugador.movimientos[index]} y causó ${danoJugador}${critico ? " (CRÍTICO)" : ""} de daño. Vida de ${oponente.nombre}: ${oponente.vida}`);
+  swal.fire({
+    title: `${jugador.nombre} usó ${jugador.movimientos[index]}`,
+    html: `Causó <span style="color: red;">${danoJugador}</span>${critico ? " (CRÍTICO)" : ""} de daño. Vida de ${oponente.nombre}: ${oponente.vida}`,
+    icon: 'info',
+    confirmButtonText: 'Aceptar'
+  });
 
   // Barra o indicador de vida oponente
   document.getElementById("vida-oponente").textContent = `Vida: ${oponente.vida}`;
@@ -135,7 +140,12 @@ function ejecutarMovimiento(index) {
   const danoOponente = Math.floor(Math.random() * 30) + 1;
   jugador.vida -= danoOponente;
 
-  alert(`${oponente.nombre} contraataca y causa ${danoOponente} de daño. Vida de ${jugador.nombre}: ${jugador.vida}`);
+  swal.fire({
+    title: `${oponente.nombre} contraataca`,
+    html: `Causa <span style="color: red;">${danoOponente}</span> de daño. Vida de ${jugador.nombre}: ${jugador.vida}`,
+    icon: 'info',
+    confirmButtonText: 'Aceptar'
+  });
 
   // Indicador de vida jugador
   document.getElementById("vida-jugador").textContent = `Vida: ${jugador.vida}`;
